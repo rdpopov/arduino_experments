@@ -1,6 +1,11 @@
+#ifndef STORAGE_INT_H
+#define STORAGE_INT_H
 #include "FS.h"
 #include "SD.h"
 #include "SPI.h"
+#include <cstddef>
+
+static int sd_setup_succ = 0;
 
 void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
   Serial.printf("Listing directory: %s\n", dirname);
@@ -52,6 +57,23 @@ void removeDir(fs::FS &fs, const char * path){
 }
 
 void readFile(fs::FS &fs, const char * path){
+  Serial.printf("Reading file: %s\n", path);
+
+  File file = fs.open(path);
+  if(!file){
+    Serial.println("Failed to open file for reading");
+    return;
+  }
+
+  Serial.print("Read from file: ");
+  while(file.available()){
+    Serial.write(file.read());
+  }
+  file.close();
+}
+
+
+void readFileInBuf(fs::FS &fs, const char * path,char * buf,size_t bufsz){
   Serial.printf("Reading file: %s\n", path);
 
   File file = fs.open(path);
@@ -159,16 +181,18 @@ void testFileIO(fs::FS &fs, const char * path){
   file.close();
 }
 
-void test_sd(){
+int setup_sd(){
+  if (sd_setup_succ) goto exit; // card already initialized;
   if(!SD.begin(5)){
     Serial.println("Card Mount Failed");
-    return;
+    Serial.println("Card may be missing or VCC is not connected to 5V");
+    return 0;
   }
   uint8_t cardType = SD.cardType();
 
   if(cardType == CARD_NONE){
     Serial.println("No SD card attached");
-    return;
+    return 0;
   }
 
   Serial.print("SD Card Type: ");
@@ -182,11 +206,13 @@ void test_sd(){
     Serial.println("UNKNOWN");
   }
 
+  sd_setup_succ = 1;
   uint64_t cardSize = SD.cardSize() / (1024 * 1024);
   Serial.printf("SD Card Size: %lluMB\n", cardSize);
-
   listDir(SD, "/", 0);
-  readFile(SD, "/hello");
   Serial.printf("Total space: %lluMB\n", SD.totalBytes() / (1024 * 1024));
   Serial.printf("Used space: %lluMB\n", SD.usedBytes() / (1024 * 1024));
+exit:
+  return  sd_setup_succ;
 }
+#endif
