@@ -12,8 +12,8 @@
 #define CONFIG_NAME "/conf.json"
 // this is overkill for size of buffer
 #define JSON_BUFSIZE 2048 
-#define JSON_PARAMETERS_MAX 20
 static char config_buf[JSON_BUFSIZE];
+static char config_buf_write[JSON_BUFSIZE];
 DynamicJsonDocument json_conf(JSON_BUFSIZE);
 // CONFIG filename format gmt year month day
 // interface
@@ -50,8 +50,9 @@ modState CONFIG_init() {
 }
 
 modState CONFIG_update(){
-    serializeJson(json_conf,config_buf,2048);
-    writeFile(SD,CONFIG_NAME,config_buf);
+    memset(config_buf_write,0,2048);
+    serializeJson(json_conf,config_buf_write,2048);
+    writeFile(SD,CONFIG_NAME,config_buf_write);
     return CONFIG_state;
 }
 
