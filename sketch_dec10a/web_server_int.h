@@ -1,3 +1,0 @@
-#ifndef WEB_SERVER_INT_H
-#define WEB_SERVER_INT_H
-#endif // WEB_SERVER_INT_H
