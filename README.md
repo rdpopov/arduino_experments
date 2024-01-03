@@ -1,21 +1,24 @@
 # weather-station
-Reimplementation and extension [weatherstation](https://github.com/fandonov/weatherstation) uisng a Nodemcu esp32.
+Reimplementation and extension [weatherstation](https://github.com/fandonov/weatherstation) 
+uisng 2 Nodemcu esp32 in a master slave configuration.
 
-## sensors
- - master node
-   - BME280 sensor
+## Sensors and Hardware
+ - master node (weather_master.ino)
+   - BME280 temperature/pressure/humidity sensor
    - DS3231-mini rtc
    - MQ-7 CO sensor
 
- - slave node
+ - slave node (weather_outside.ino)
    - GUVA-S12SD analog UV sensor
-   - BME280 sensor
+   - BME280 temperature/pressure/humidity sensor
 
-## other hardware
-- generic SPI SD card adapter
-- ssd1306 display
-## features
-### software features
+
+## Other hardware
+ - generic SPI SD card adapter
+ - ssd1306 display
+
+## Features
+### Software features
  - logging of sensor data on a set interval
     - data from slave device - Temperature, Humidity, Pressure, UV index
     - data from master device - Temperature, Humidity, Pressure, Altitude.
@@ -30,16 +33,36 @@ Reimplementation and extension [weatherstation](https://github.com/fandonov/weat
  - persistent configuration of some parameters via a json file
  - battery % reporting from slave device
 
-### network features
+### Network features
  - connects to a wireless network with provided credentials
  - creates its own hotspot with baked in password and ssid if it cant find
    it/connect
  - very simple configuration page to edit some of the settings.
    changing a setting would require a restart to take effect
+    ![Configuration](.img/Settings.png)
  - a simple dashboard to show information from sensors every few seconds.
- - ntp client to syncronise clocks if connected to a network
+    ![Dashboard](.img/Dashboard.png)
+ - ntp client to synchronise clocks if connected to a network
+ - web pages are intentionally spartan and are more of a proof of concept
+ - slave device communicates over esp_now
 
-### display
+### Configuration
+``` json
+    {
+        "ssid":"Rosko",       // network to connect to
+        "pass":"12345678",    // password for that network
+        "dssid":"E32Wtr-St",  // name of default hotspot
+        "dpass":"12345678",   // password to be set there
+        "gmt":"2",            // gmt compensate
+        "useds":"1",          // use Daylight savings
+        "syncntp":"1",        // enable syncing with ntp
+        "log_delay":"600000", // log interval in ms
+        "lat":"42.6977",      //  Latitude
+        "lon":"23.3219"       // Longitude
+    }
+```
+
+### Display
  - CO ppm
  - Atmospheric readings inside  (temp,pressure,altitude,humidity)
  - Atmospheric readings outside (temp,pressure,humidity, uv idx)
@@ -47,6 +70,25 @@ Reimplementation and extension [weatherstation](https://github.com/fandonov/weat
  - Time and Date adjusted with Daylight savings and Timezone, current IP of device
  - Time of Sunrise, Sunset, Moonrise, Moonset moon phase angle and illumination %
  - Weather forecast and Pressure trend
+ - Runs in its own thread.
 
 ## Requirements
-TODO add requirements
+ - FS
+ - SD
+ - SPI
+ - ArduinoJson
+ - WiFiProv
+ - WiFi
+ - NTPClient
+ - DS3231
+ - Wire
+ - MQ7Sensor
+ - MoonPhase
+ - MoonRise
+ - SunRise
+ - Adafruit
+ - Adafruit
+ - AsyncTCP
+ - esp_now
+ - ESPAsyncWebSrv
+ - SimpleBLE
