@@ -1,6 +1,5 @@
 #ifndef ZAMBRETTI_MOD_H
 #define ZAMBRETTI_MOD_H
-#include "esp32-hal.h"
 #include "st.h"
 #include <cstdint>
 #include <cstdio>
@@ -19,7 +18,6 @@ static int sleep_interval = 1000; // module state
 static int pressureArray[ZAMBRETTI_SAMPLE]={0};
 #define ZAMBRETTI_BACK_SIZE 256
 #define ZAM_BACKUPNAME "/.zam.bak"
-#define ZAM_BACKUPNAME_tst "/.tst.bak"
 static char ZAM_buffer[ZAMBRETTI_BACK_SIZE] = {0};
 static int last_hour = 0;
 static int last_minute = 0;
@@ -43,6 +41,13 @@ static int weather_state = 0;
 // functuions
 int station2sealevel(int p, int height, int t){
     return (double) p*pow(1-0.0065*(double)height/(t+0.0065*(double)height+273.15),-5.275);
+}
+inline int last_idx(){
+    int i = 0 ;
+    while( i < ZAMBRETTI_SAMPLE && pressureArray[i]){
+        i++;
+    }
+    return i;
 }
 
 int calc_zambretti(int curr_pressure, int prev_pressure, int mon) {
@@ -146,8 +151,7 @@ void ZAMBRETTI_load_backup(){
             &pressureArray[7],
             &pressureArray[8],
             &pressureArray[9]);
-    counter = 10;
-    return;
+   return;
 };
 
 int32_t zambretti_weather() { // retruns a bit field of weather
@@ -162,25 +166,24 @@ int32_t zambretti_weather() { // retruns a bit field of weather
     pressure = pressure ==0.0 ?  TEMP_pres : pressure;
 
     int altitude=TEMP_altd;
-    int seapressure = station2sealevel(pressure,altitude,temperature);
+   int seapressure = station2sealevel(pressure,altitude,temperature);
     int crnt_hour=CurrentTime.hour();
     int crnt_minute=CurrentTime.minute();
     int Z=0;
-    zambretti_mutex.lock();
-    if (crnt_hour!=last_hour || crnt_minute!=last_minute) {
+    if (crnt_hour!=last_hour || crnt_minute!=last_minute && pressure > 0 && seapressure > 0) {
+        zambretti_mutex.lock();
         weather_state = 0;
         delta_time++;
         if (delta_time>max_delta){
             delta_time=0;
-            if (counter==10) {
+            int idx = last_idx(); 
+            if (idx == 10) {
                 for (int i=0; i<9;i++) {
                     pressureArray[i]=pressureArray[i+1];
                 }
                 pressureArray[counter-1]=seapressure; 
-
             } else {
-                pressureArray[counter]=seapressure;
-                counter++;
+                pressureArray[idx]=seapressure;
             }
             Serial.println("BACKUP");
             ZAMBRETTI_backup();
@@ -224,8 +227,8 @@ int32_t zambretti_weather() { // retruns a bit field of weather
 
         last_hour = crnt_hour;
         last_minute = crnt_minute;
+        zambretti_mutex.unlock();
     }
-    zambretti_mutex.unlock();
     return weather_state;
 }
 // ------------------------

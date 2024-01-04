@@ -3,6 +3,7 @@
 #include "DS3231.h"
 #include "astro_mod.h"
 #include "esp32-hal.h"
+#include "esp_heap_caps.h"
 #include "gas_mod.h"
 #include "network_mod.h"
 #include "temp_mod.h"
@@ -10,6 +11,7 @@
 #include "astro_mod.h"
 #include "sl_device_mod.h"
 #include "zambretti_mod.h"
+#include "config_mod.h"
 #include "st.h"
 // includes
 #include <Wire.h>
@@ -44,12 +46,23 @@ modState DISPLAY_init() {
             DISPLAY_state = ModError;
         }
 
+        int pos = 0;
         delay(2000);         // wait two seconds for initializing
         oled.clearDisplay(); // clear display
         oled.setTextSize(1);         // set text size
         oled.setTextColor(WHITE);    // set text color
-        oled.setCursor(0, 10);       // set position to display
-        oled.println("Hello there!"); // set text
+        oled.setCursor(0,pos);       // set position to display
+        oled.println("Booting"); // set text
+        if (CONFIG_state == ModError){
+            pos =+ 8;
+            oled.setCursor(0, pos);       // set position to display
+            oled.println("Wrong config"); // set text
+        }
+        if (softAP){
+            pos =+ 8;
+            oled.setCursor(0, pos);       // set position to display
+            oled.println("Using backup AP"); // set text
+        }
         oled.display();
         DISPLAY_state = ModOK;
     }
@@ -189,7 +202,7 @@ modState ASTRO_display(){
     oled.setCursor(0, ypos); ypos +=8;       // set position to display
     oled.printf("Moon Set: %02d:%02d" ,(MSTime.hour() + gmt + ds) % 24,MSTime.minute());
     oled.setCursor(0, ypos); ypos +=8;       // set position to display
-    oled.printf("Ang: %d o Lit: %d ", moon_dat.angle,moon_dat.percentLit * 100  );
+    oled.printf("Ang: %d o Lit: %.2f", moon_dat.angle,moon_dat.percentLit * 100  );
     oled.setCursor(0, ypos); ypos +=8;       // set position to display
     ASTRO_mutex.unlock();
     return ModOK;

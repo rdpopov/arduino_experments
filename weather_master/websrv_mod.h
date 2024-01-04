@@ -1,6 +1,5 @@
 #ifndef WEBSRV_MOD_H
 #define WEBSRV_MOD_H
-#include "WString.h"
 #include "clock_mod.h"
 #include "network_mod.h"
 #include "st.h"
@@ -21,9 +20,6 @@
 // interface
 // variables
 static modState WEBSRV_state = ModUninitialized; // module state
-const char* PARAM_INPUT_1 = "input1";
-const char* PARAM_INPUT_2 = "input2";
-const char* PARAM_INPUT_3 = "input3";
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html><head>
   <title>ESP Input Form</title>
@@ -41,6 +37,12 @@ const char index_html[] PROGMEM = R"rawliteral(
     <tr><td>Longitude:</td><td> <input type="text" name="lon" value="%lon%"></td></tr>
   </table>
     <input type="submit" value="Submit">
+  </form>
+  <form action="/restart">
+    <input type="submit" value="Restart">
+  </form>
+  <form action="/recalibrate">
+    <input type="submit" value="Recalibrate">
   </form>
 </body></html>)rawliteral";
 
@@ -62,11 +64,11 @@ const char dash_page[] PROGMEM = R"rawliteral(
 setInterval(function() {
   getData("tempIns");
   getData("tempOut");
-    getData("forecast");
-    getData("co");
-    getData("sun");
-    getData("moon");
-    getData("moon_ang");
+  getData("forecast");
+  getData("co");
+  getData("sun");
+  getData("moon");
+  getData("moon_ang");
 }, 5000); //2000mSeconds update rate
 
 function getData(field) {
@@ -172,7 +174,7 @@ void send_moon_ang(AsyncWebServerRequest *request){
     static char buf[128];
     memset(buf, 0, 128);
     ASTRO_mutex.lock();
-    sprintf(buf, "Ang: %d o Lit: %d ", moon_dat.angle,moon_dat.percentLit * 100  );
+    sprintf(buf, "Ang: %d o Lit: %.2f ", moon_dat.angle,moon_dat.percentLit * 100  );
     ASTRO_mutex.unlock();
     request->send_P(200, "text/html", buf);
 }
@@ -181,6 +183,16 @@ modState WEBSRV_init() {
     if (WEBSRV_state) {
         server.on("/", HTTP_GET, 
                 [](AsyncWebServerRequest *request){
+                request->send_P(200, "text/html", index_html,processor);
+                });
+        server.on("/restart", HTTP_GET, 
+                [](AsyncWebServerRequest *request){
+                ESP.restart();
+                request->send_P(200, "text/html", index_html,processor);
+                });
+        server.on("/recalibrate", HTTP_GET, 
+                [](AsyncWebServerRequest *request){
+                mq7.calibrate();
                 request->send_P(200, "text/html", index_html,processor);
                 });
         server.on("/dash", HTTP_GET, 
@@ -223,11 +235,6 @@ modState WEBSRV_update(){
 
 int WEBSRV_get(){ 
     return 0;
-}
-
-modState WEBSRV_display(){ 
-    Serial.printf("WEBSRV:%d,",0);
-    return ModOK;
 }
 
 modState WEBSRV_log(){ 

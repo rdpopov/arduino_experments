@@ -15,36 +15,36 @@ uisng 2 Nodemcu esp32 in a master slave configuration.
 
 ## Other hardware
  - generic SPI SD card adapter up to 32G
- - ssd1306 128x64 monochrome display
+ - SSD1306 128x64 monochrome display
 
 ## Features
 ### Software features
- - logging of sensor data on a set interval
-    - data from slave device - Temperature, Humidity, Pressure, UV index
+ - Logging of sensor data on a set interval.
+    - data from slave device - Temperature, Humidity, Pressure, UV index.
     - data from master device - Temperature, Humidity, Pressure, Altitude.
- - clock syncing with ntp
- - clock with daylight savings/timezone adjustments
- - moon rise/set calculation using [MoonRise.h](https://www.arduino.cc/reference/en/libraries/moonrise/)
- - moon angle and illuminated surface using [moonPhase.h](https://www.arduino.cc/reference/en/libraries/moonphase/)
- - sun rise/set calculation [SunRise.h](https://www.arduino.cc/reference/en/libraries/sunrise/)
- - showing curated information for the sensors on display
- - short term weather forecast using [zambretti algorithm](https://github.com/fandonov/weatherstation/blob/master/weather-station.ino) 
-   (modified to have persistent data of past predictions with a file on the sd card)
- - persistent configuration of some parameters via a json file
- - battery % reporting from slave device
+ - Clock syncing with ntp.
+ - Clock with daylight savings/timezone adjustments.
+ - Moon rise/set calculation using [MoonRise.h](https://www.arduino.cc/reference/en/libraries/moonrise/).
+ - Moon angle and illuminated surface using [moonPhase.h](https://www.arduino.cc/reference/en/libraries/moonphase/).
+ - Sun rise/set calculation [SunRise.h](https://www.arduino.cc/reference/en/libraries/sunrise/).
+ - Showing curated information for the sensors on display.
+ - Short term weather forecast using [zambretti algorithm](https://github.com/fandonov/weatherstation/blob/master/weather-station.ino) 
+   (modified to have persistent data of past predictions with a file on the S card).
+ - Persistent configuration of some parameters via a json file.
+ - Battery % reporting from slave device.
+
 
 ### Network features
- - connects to a wireless network with provided credentials
- - creates its own hotspot with baked in password and ssid if it cant find
-   it/connect
- - very simple configuration page to edit some of the settings.
-   changing a setting would require a restart to take effect
-    ![Configuration](img/Settings.png)
- - a simple dashboard to show information from sensors every few seconds.
+ - Connects to a wireless network with provided credentials.
+ - Creates its own hotspot with baked in password and ssid if it cant find
+   it/connect.
+ - Very simple configuration page to edit some of the settings.
+   Changing a setting would require a restart to take effect. ![Configuration](img/Settings.png)
+ - A simple dashboard to show information from sensors every few seconds.
     ![Dashboard](img/Dashboard.png)
- - ntp client to synchronise clocks if connected to a network
- - web pages are intentionally spartan and are more of a proof of concept
- - slave device communicates over esp_now
+ - Web pages are intentionally spartan and are more of a proof of concept.
+ - Ntp client to synchronise clocks if connected to a network.
+ - Slave device communicates over esp_now.
 
 ### Configuration
 ``` json
@@ -95,3 +95,7 @@ uisng 2 Nodemcu esp32 in a master slave configuration.
     - Adafruit_SSD1306
  - BME280
     - Adafruit_BME280
+
+## Hardware Realisation
+![Configuration](img/Above.png)
+![Configuration](img/Bellow.png)

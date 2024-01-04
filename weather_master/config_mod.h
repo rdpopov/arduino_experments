@@ -49,7 +49,7 @@ modState CONFIG_init() {
     return CONFIG_state;
 }
 
-modState CONFIG_update(){
+modState CONFIG_update() {
     memset(config_buf_write,0,2048);
     serializeJson(json_conf,config_buf_write,2048);
     writeFile(SD,CONFIG_NAME,config_buf_write);

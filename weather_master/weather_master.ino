@@ -50,16 +50,15 @@ void loop(){
 
     // log every n seconds
     static int compound_delay = 0;
-    if(compound_delay >= log_delay) {
+    if(compound_delay % log_delay != compound_delay) {
         OUTSIDE_RECIEVER_log();
         GAS_log();
         TEMP_log();
         LOG_log();
-        compound_delay +=5000;
-        compound_delay %= log_delay;
     } else {
-        compound_delay +=5000;
+        compound_delay %= log_delay;
     } 
+        compound_delay +=5000;
     delay(5000); // second delay
 } 
 
