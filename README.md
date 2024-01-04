@@ -14,8 +14,8 @@ uisng 2 Nodemcu esp32 in a master slave configuration.
 
 
 ## Other hardware
- - generic SPI SD card adapter
- - ssd1306 display
+ - generic SPI SD card adapter up to 32G
+ - ssd1306 128x64 monochrome display
 
 ## Features
 ### Software features
@@ -39,9 +39,9 @@ uisng 2 Nodemcu esp32 in a master slave configuration.
    it/connect
  - very simple configuration page to edit some of the settings.
    changing a setting would require a restart to take effect
-    ![Configuration](.img/Settings.png)
+    ![Configuration](img/Settings.png)
  - a simple dashboard to show information from sensors every few seconds.
-    ![Dashboard](.img/Dashboard.png)
+    ![Dashboard](img/Dashboard.png)
  - ntp client to synchronise clocks if connected to a network
  - web pages are intentionally spartan and are more of a proof of concept
  - slave device communicates over esp_now
@@ -49,22 +49,22 @@ uisng 2 Nodemcu esp32 in a master slave configuration.
 ### Configuration
 ``` json
     {
-        "ssid":"Rosko",       // network to connect to
+        "ssid":"Rosko",       // ssid connect to
         "pass":"12345678",    // password for that network
-        "dssid":"E32Wtr-St",  // name of default hotspot
+        "dssid":"E32Wtr-St",  // ssid of default hotspot
         "dpass":"12345678",   // password to be set there
         "gmt":"2",            // gmt compensate
         "useds":"1",          // use Daylight savings
         "syncntp":"1",        // enable syncing with ntp
         "log_delay":"600000", // log interval in ms
-        "lat":"42.6977",      //  Latitude
+        "lat":"42.6977",      // Latitude
         "lon":"23.3219"       // Longitude
     }
 ```
 
 ### Display
  - CO ppm
- - Atmospheric readings inside  (temp,pressure,altitude,humidity)
+ - Atmospheric reading.s inside  (temp,pressure,altitude,humidity)
  - Atmospheric readings outside (temp,pressure,humidity, uv idx)
  - Time and Date, current IP of device
  - Time and Date adjusted with Daylight savings and Timezone, current IP of device
@@ -73,22 +73,25 @@ uisng 2 Nodemcu esp32 in a master slave configuration.
  - Runs in its own thread.
 
 ## Requirements
- - FS
- - SD
- - SPI
- - ArduinoJson
- - WiFiProv
- - WiFi
- - NTPClient
- - DS3231
- - Wire
- - MQ7Sensor
- - MoonPhase
- - MoonRise
- - SunRise
- - Adafruit
- - Adafruit
- - AsyncTCP
- - esp_now
- - ESPAsyncWebSrv
- - SimpleBLE
+ - Moon and Sun calculations
+    - MoonPhase
+    - MoonRise
+    - SunRise
+ - CO detector
+    - MQ7Sensor
+ - SD card fs and Configuration
+    - FS
+    - SD
+    - SPI
+    - ArduinoJson
+ - Web server
+    - ESPAsyncWebSrv 
+    - WiFiProv
+    - WiFi
+ - RTC
+    - NTPClient
+    - DS3231
+ - Display
+    - Adafruit_SSD1306
+ - BME280
+    - Adafruit_BME280

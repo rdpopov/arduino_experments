@@ -17,7 +17,7 @@
 #include <Adafruit_BME280.h>
 
 const char* ssid = "Rosko";
-const char* backup_ssid = "esp32_weatherstation";
+const char* backup_ssid = "E32Wtr-St";
 static Adafruit_BME280 bme;
 
 uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
