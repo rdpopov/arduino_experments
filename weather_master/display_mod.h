@@ -53,7 +53,7 @@ modState DISPLAY_init() {
         oled.setTextColor(WHITE);    // set text color
         oled.setCursor(0,pos);       // set position to display
         oled.println("Booting"); // set text
-        if (CONFIG_state == ModError){
+        if (CONFIG_state){
             pos =+ 8;
             oled.setCursor(0, pos);       // set position to display
             oled.println("Wrong config"); // set text
