@@ -21,17 +21,17 @@ uisng 2 Nodemcu esp32 in a master slave configuration.
 ### Software features
  - Logging of sensor data on a set interval.
     - data from slave device - Temperature, Humidity, Pressure, UV index.
-    - data from master device - Temperature, Humidity, Pressure, Altitude.
+    - data from master device - Temperature, Humidity, Pressure, Altitude, CO ppm.
  - Clock syncing with ntp.
  - Clock with daylight savings/timezone adjustments.
  - Moon rise/set calculation using [MoonRise.h](https://www.arduino.cc/reference/en/libraries/moonrise/).
  - Moon angle and illuminated surface using [moonPhase.h](https://www.arduino.cc/reference/en/libraries/moonphase/).
  - Sun rise/set calculation [SunRise.h](https://www.arduino.cc/reference/en/libraries/sunrise/).
  - Showing curated information for the sensors on display.
- - Short term weather forecast using [zambretti algorithm](https://github.com/fandonov/weatherstation/blob/master/weather-station.ino) 
+ - Short term weather forecast and pressure trend using [zambretti algorithm](https://github.com/fandonov/weatherstation/blob/master/weather-station.ino) 
    (modified to have persistent data of past predictions with a file on the S card).
  - Persistent configuration of some parameters via a json file.
- - Battery % reporting from slave device.
+ - Battery % reporting from slave device. (currently unused)
 
 
 ### Network features
@@ -39,7 +39,8 @@ uisng 2 Nodemcu esp32 in a master slave configuration.
  - Creates its own hotspot with baked in password and ssid if it cant find
    it/connect.
  - Very simple configuration page to edit some of the settings.
-   Changing a setting would require a restart to take effect. ![Configuration](img/Settings.png)
+   Changing a setting would require a restart to take effect.
+    ![Configuration](img/Settings.png)
  - A simple dashboard to show information from sensors every few seconds.
     ![Dashboard](img/Dashboard.png)
  - Web pages are intentionally spartan and are more of a proof of concept.
@@ -47,6 +48,7 @@ uisng 2 Nodemcu esp32 in a master slave configuration.
  - Slave device communicates over esp_now.
 
 ### Configuration
+File should be placed in sd card root [conf.json](conf.json)
 ``` json
     {
         "ssid":"Rosko",       // ssid connect to
