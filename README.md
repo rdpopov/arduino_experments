@@ -97,5 +97,5 @@ uisng 2 Nodemcu esp32 in a master slave configuration.
     - Adafruit_BME280
 
 ## Hardware Realisation
-![Configuration](img/Above.png)
-![Configuration](img/Bellow.png)
+![Configuration](img/Above.jpg)
+![Configuration](img/Bellow.jpg)
